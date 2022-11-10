@@ -45,15 +45,20 @@ def bssid_graph(client: MongoClient, bssid: str):
 
     for ap_data_frames_id in ap_data_frames_ids:
         y = ap_data_frames.find_one({"_id": ap_data_frames_id})['rssi']
-        x = data_frames.find_one({"ap_data_frames": [ap_data_frames_id]})['time']
+        x = data_frames.find_one({"ap_data_frames": ap_data_frames_id})['time']
         datapoints.append((x,y))
     
     datapoints.sort(key = lambda p: p[0])
 
+    start_x = datapoints[0][0]
+    for i in range(len(datapoints)):
+        datapoints[i] = (datapoints[i][0]-start_x,datapoints[i][1])
+
     x,y = zip(*datapoints)
 
-    print(x)
-    print(y)
+    plt.plot(x,y)
+
+    plt.show()
 
 
 
