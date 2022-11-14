@@ -82,3 +82,27 @@ def rssi_location(client: MongoClient, bssid: str):
     return datapoints
 
 
+
+def accesspoint_est(rssi_list: list, locations_list: list):
+
+    signal_strengths = []
+    for rssi in rssi_list:
+        signal_strengths.append(100+rssi)
+    
+    sr_list = []
+
+    for signal_strength in signal_strengths:
+        sr_list.append(signal_strength/sum(signal_strengths))
+
+    longitude = 0
+    latitude = 0
+
+    for i in range(len(locations_list)):
+        longitude += float(locations_list[i][0])*sr_list[i]
+        latitude += float(locations_list[i][1])*sr_list[i]
+    
+
+    return longitude, latitude
+
+
+

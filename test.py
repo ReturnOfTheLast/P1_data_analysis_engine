@@ -15,8 +15,8 @@ print(data_extract.ssid_overview(client, filter_str = filter_str, filtertype = f
 
 #data_extract.bssid_graph(client,"6c310eba0aa4")
 
-heatmap_data = data_extract.rssi_location(client, "3c510e13fd84")
+data = data_extract.rssi_location(client, "3c510e13fd84")
 
-    
+print(data_extract.accesspoint_est(data['rssi'],data['location']))
 
     
