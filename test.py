@@ -1,5 +1,6 @@
 import pymongo
 import data_extract
+import matplotlib.pyplot as plt
 
 db_usernanme = "root"
 db_password = "password"
@@ -12,9 +13,10 @@ filtertype = 0
 print(data_extract.ssid_overview(client, filter_str = filter_str, filtertype = filtertype))
 
 
-data_extract.bssid_graph(client,"6c310eba0aa4")
+#data_extract.bssid_graph(client,"6c310eba0aa4")
 
-print(data_extract.rssi_location(client, "6c310eba0aa4"))
+heatmap_data = data_extract.rssi_location(client, "3c510e13fd84")
+
     
 
     
