@@ -13,6 +13,8 @@ print(data_extract.ssid_overview(client, filter_str = filter_str, filtertype = f
 
 
 data_extract.bssid_graph(client,"6c310eba0aa4")
+
+print(data_extract.rssi_location(client, "6c310eba0aa4"))
     
 
     

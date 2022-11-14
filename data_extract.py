@@ -61,4 +61,24 @@ def bssid_graph(client: MongoClient, bssid: str):
     plt.show()
 
 
+def rssi_location(client: MongoClient, bssid: str):
+
+    db = client["scandata"]
+    data_frames, ap_data_frames, bssid_pool = db["data_frames"], db["ap_data_frames"], db["bssid_pool"]
+    bssid_id = bssid_pool.find_one({"name": bssid})["_id"]
+
+    ap_data_frames_ids = []
+
+    for ap_data_frames_id in ap_data_frames.find({"bssid": bssid_id}):
+        ap_data_frames_ids.append(ap_data_frames_id["_id"])
+
+    datapoints = {"rssi": [],"location": []}
+
+    for ap_data_frames_id in ap_data_frames_ids:
+        datapoints["rssi"].append(ap_data_frames.find_one({"_id": ap_data_frames_id})["rssi"])
+        datapoints["location"].append(data_frames.find_one({"ap_data_frames": ap_data_frames_id})["location"])
+    
+
+    return datapoints
+
 
