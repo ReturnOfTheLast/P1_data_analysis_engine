@@ -23,7 +23,7 @@ color_gradient = [
                     [100, 255, 0, 0]
                  ]
 
-def getcolor(color_gradient: list, percent: int) -> tuple:
+def getcolor(color_gradient: list, percent: int) -> tuple[int, int, int]:
     index = 0
     for i in range(len(color_gradient)):
         if percent < color_gradient[i][0]:
