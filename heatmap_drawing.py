@@ -1,4 +1,4 @@
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from math import sqrt
 
 """
@@ -16,6 +16,8 @@ scans = [
     ...
 ]
 """
+
+fnt = ImageFont.truetype("LiberationMono-Regular.ttf", 20)
 
 color_gradient = [
                     [0, 0, 255, 0],
@@ -84,6 +86,7 @@ def draw_scanning_points(im: Image.Image, scans: list[dict]) -> None:
             (scan["coords"][0] + 10, scan["coords"][1]),
             scan["label"],
             fill=(0, 255, 255),
+            font=fnt,
             anchor="ls"
         )
 
@@ -100,5 +103,6 @@ def draw_accesspoint(im: Image.Image, ap: dict) -> None:
         (ap["coords"][0] + 10, ap["coords"][1]),
         ap["label"],
         fill=(50, 50, 50),
+        font=fnt,
         anchor="ls"
     )
