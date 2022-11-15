@@ -17,6 +17,9 @@ print(data_extract.ssid_overview(client, filter_str = filter_str, filtertype = f
 
 data = data_extract.rssi_location(client, "3c510e13fd84")
 
-print(data_extract.accesspoint_est(data['rssi'],data['location']))
+ap_location = data_extract.accesspoint_est(data['rssi'],data['location'])
+
+
+data_extract.generate_heatmap(ap_location,data,1000,20)
 
     

@@ -1,8 +1,7 @@
 #Import modules
 from pymongo import MongoClient
-import numpy as np
 import matplotlib.pyplot as plt
-from copy import deepcopy
+import heatmap_drawing as hd
 
 
 def client(username: str, password: str, host: str):
@@ -99,34 +98,23 @@ def accesspoint_est(rssi_list: list, locations_list: list):
     latitude = 0
 
     for i in range(len(locations_list)):
-        longitude += float(locations_list[i][0])*sr_list[i]
-        latitude += float(locations_list[i][1])*sr_list[i]
+        longitude += locations_list[i][0]*sr_list[i]
+        latitude += locations_list[i][1]*sr_list[i]
     
 
     return longitude, latitude
 
-def convert_location(ap_location: tuple, scan_locations: list, rssi: list):
+def convert_location(ap_location: tuple, scan_locations: list, isize: int, buffer: int) -> tuple[tuple, list[tuple]]:
 
-    size = 1000
-    buffer = 20
+    size = isize-buffer*2
 
-    temp_list = deepcopy(scan_locations)
-    temp_list.sort(key= lambda x: x[1])
-    min_longitude = temp_list[0][1]
-    max_longitude = temp_list[-1][1]
+    min_longitude = min(min(scan_locations, key = lambda x: x[1])[1], ap_location[1])
+    max_longitude = max(max(scan_locations, key = lambda x: x[1])[1], ap_location[1])
 
-    temp_list.sort(key= lambda x: x[0])
-    min_latitude = temp_list[0][0]
-    max_latitude = temp_list[-1][0]
+    min_latitude = max(max(scan_locations, key = lambda x: x[0])[0], ap_location[0])
+    max_latitude = min(min(scan_locations, key = lambda x: x[0])[0], ap_location[0])
     
-    min_latitude = min(min_latitude, ap_location[0])
-    max_latitude = max(max_latitude, ap_location[0])
-
-    min_longitude = min(min_longitude, ap_location[1])
-    max_longitude = max(max_longitude, ap_location[1])
-    
-    
-    aspect_ratio = (max_latitude-min_latitude)/(max_longitude-min_longitude)
+    aspect_ratio = abs((max_longitude-min_longitude)/(max_latitude-min_latitude))
 
     if aspect_ratio > 1:
         x_axis = size 
@@ -134,16 +122,58 @@ def convert_location(ap_location: tuple, scan_locations: list, rssi: list):
     else:
         y_axis = size
         x_axis = size * aspect_ratio
-        
-    
 
-    ap_grid_location = (((ap_location[0]-min_latitude)/(max_latitude-min_latitude))*x_axis,
-                        ((ap_location[1]-min_longitude)/(max_longitude-min_longitude))*y_axis)
-
-    data = []
+    ap_grid_location = (
+        int(
+            abs(
+                (ap_location[1] - min_longitude)/(max_longitude-min_longitude)
+            )*x_axis + buffer
+        ),
+        int(
+            abs(
+                (ap_location[0] - min_latitude)/(max_latitude-min_latitude)
+            )*y_axis + buffer
+        )
+    )
+    scan_grid_locations = []
 
     for location in scan_locations:
-        temp_latitude = ((location[0]-min_latitude)/(max_latitude-min_latitude))*x_axis
-        temp_longitude = (((location[1]-min_longitude)/(max_longitude-min_longitude))*y_axis)
-        data.append([temp_latitude,temp_longitude])
+        scan_grid_locations.append((
+        int(
+            abs(
+                (location[1] - min_longitude)/(max_longitude-min_longitude)
+            )*x_axis + buffer
+        ),
+        int(
+            abs(
+                (location[0] - min_latitude)/(max_latitude-min_latitude)
+            )*y_axis + buffer
+        )
+    ))
+    
+    return ap_grid_location, scan_grid_locations
 
+def generate_heatmap(ap_location, scan_locations, size, buffer):
+    ap_grid_location, scan_grid_locations = convert_location(ap_location, scan_locations['location'], size, buffer)
+
+    ap = {
+        'coords': ap_grid_location,
+        'label': f'Access Point {ap_location}'
+    }
+
+    scans = []
+
+    for i, scan_loc in enumerate(scan_grid_locations):
+        scans.append(
+            {
+                'coords': scan_loc,
+                'rssi': scan_locations['rssi'][i],
+                'label': f'{scan_locations["location"][i]}'
+            }
+        )
+
+    im = hd.make_image(size,size)
+    hd.draw_heat_circles(im,ap,scans)
+    hd.draw_accesspoint(im,ap)
+    hd.draw_scanning_points(im,scans)
+    im.show()
