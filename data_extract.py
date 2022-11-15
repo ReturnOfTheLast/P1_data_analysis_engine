@@ -102,7 +102,7 @@ def accesspoint_est(rssi_list: list, locations_list: list):
         latitude += locations_list[i][1]*sr_list[i]
     
 
-    return longitude, latitude
+    return round(longitude,6), round(latitude,6)
 
 def convert_location(ap_location: tuple, scan_locations: list, isize: int, buffer: int) -> tuple[tuple, list[tuple]]:
 

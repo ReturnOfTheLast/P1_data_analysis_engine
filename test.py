@@ -20,6 +20,6 @@ data = data_extract.rssi_location(client, "3c510e13fd84")
 ap_location = data_extract.accesspoint_est(data['rssi'],data['location'])
 
 
-data_extract.generate_heatmap(ap_location,data,1000,20)
+data_extract.generate_heatmap(ap_location,data,2000,20)
 
     
