@@ -2,6 +2,7 @@
 from pymongo import MongoClient
 import numpy as np
 import matplotlib.pyplot as plt
+from copy import deepcopy
 
 
 def client(username: str, password: str, host: str):
@@ -104,5 +105,45 @@ def accesspoint_est(rssi_list: list, locations_list: list):
 
     return longitude, latitude
 
+def convert_location(ap_location: tuple, scan_locations: list, rssi: list):
 
+    size = 1000
+    buffer = 20
+
+    temp_list = deepcopy(scan_locations)
+    temp_list.sort(key= lambda x: x[1])
+    min_longitude = temp_list[0][1]
+    max_longitude = temp_list[-1][1]
+
+    temp_list.sort(key= lambda x: x[0])
+    min_latitude = temp_list[0][0]
+    max_latitude = temp_list[-1][0]
+    
+    min_latitude = min(min_latitude, ap_location[0])
+    max_latitude = max(max_latitude, ap_location[0])
+
+    min_longitude = min(min_longitude, ap_location[1])
+    max_longitude = max(max_longitude, ap_location[1])
+    
+    
+    aspect_ratio = (max_latitude-min_latitude)/(max_longitude-min_longitude)
+
+    if aspect_ratio > 1:
+        x_axis = size 
+        y_axis = size * aspect_ratio**(-1)
+    else:
+        y_axis = size
+        x_axis = size * aspect_ratio
+        
+    
+
+    ap_grid_location = (((ap_location[0]-min_latitude)/(max_latitude-min_latitude))*x_axis,
+                        ((ap_location[1]-min_longitude)/(max_longitude-min_longitude))*y_axis)
+
+    data = []
+
+    for location in scan_locations:
+        temp_latitude = ((location[0]-min_latitude)/(max_latitude-min_latitude))*x_axis
+        temp_longitude = (((location[1]-min_longitude)/(max_longitude-min_longitude))*y_axis)
+        data.append([temp_latitude,temp_longitude])
 
