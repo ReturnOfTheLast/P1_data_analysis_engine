@@ -385,16 +385,15 @@ def generate_heatmap(
     # Return the generated image
     return im
 
-def image_to_png_bytes(im: Image.Image) -> bytes:
-    """Convert pillow image object into a png bytes.
+def image_to_png_bytes(im: Image.Image) -> BytesIO:
+    """Convert pillow image object into a png bytes object.
 
     Args:
         im (Image.Image): Image to convert
 
     Returns:
-        bytes: png bytes
+        BytesIO: PNG bytes object
     """
     buf = BytesIO()
     im.save(buf, format="png")
-    return buf.read()
-
+    return buf
