@@ -75,7 +75,7 @@ def generate_ssid_overview(
     # Return dictionary
     return ssid_bssid
 
-def make_bssid_graph(
+def generate_bssid_graph(
     client: MongoClient,
     bssid: str
 ) -> Image.Image:
@@ -118,7 +118,7 @@ def make_bssid_graph(
         datapoints.append((x,y))
    
     # Get the lowest rssi
-    start_x = min(datapoints, key = lambda p: p[0])
+    start_x = min(datapoints, key = lambda p: p[0])[0]
     
     # Lower all x values by the lowest rssi
     for i in range(len(datapoints)):
