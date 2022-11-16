@@ -133,7 +133,7 @@ def generate_bssid_graph(
     ax.plot(x, y)
 
     # Setup legends
-    ax.legends()
+    ax.legend()
     ax.set_xlabel("Time")
     ax.set_ylabel("RSSI")
     
