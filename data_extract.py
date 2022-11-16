@@ -130,10 +130,11 @@ def generate_bssid_graph(
 
     # Make scatter plot of the values
     fig, ax = plt.subplots()
-    ax.plot(x, y)
+    ax.plot(x, y, label="Measured RSSI")
 
     # Setup legends
     ax.legend()
+    ax.set_title("RSSI over Time")
     ax.set_xlabel("Time")
     ax.set_ylabel("RSSI")
     
