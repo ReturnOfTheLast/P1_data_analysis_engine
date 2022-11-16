@@ -3,7 +3,7 @@ from pymongo import MongoClient
 import matplotlib.pyplot as plt
 from PIL import Image
 from io import BytesIO
-import heatmap_drawing as hd
+import heatmap_utils as hu
 
 def client(
     username: str,
@@ -377,10 +377,24 @@ def generate_heatmap(
         )
 
     # Make the image and draw the heat circles and nodes
-    im = hd.make_image(size,size)
-    hd.draw_heat_circles(im,ap,scans)
-    hd.draw_accesspoint(im,ap)
-    hd.draw_scanning_points(im,scans)
+    im = hu.make_image(size,size)
+    hu.draw_heat_circles(im,ap,scans)
+    hu.draw_accesspoint(im,ap)
+    hu.draw_scanning_points(im,scans)
     
     # Return the generated image
     return im
+
+def image_to_png_bytes(im: Image.Image) -> bytes:
+    """Convert pillow image object into a png bytes.
+
+    Args:
+        im (Image.Image): Image to convert
+
+    Returns:
+        bytes: png bytes
+    """
+    buf = BytesIO()
+    im.save(buf, format="png")
+    return buf.read()
+
