@@ -1,9 +1,9 @@
 #Import modules
 from pymongo import MongoClient
 import matplotlib.pyplot as plt
-import numpy as np
-import heatmap_drawing as hd
 from PIL import Image
+from io import BytesIO
+import heatmap_drawing as hd
 
 def client(
     username: str,
@@ -138,7 +138,11 @@ def generate_bssid_graph(
     ax.set_ylabel("RSSI")
     
     # Return image object
-    return Image.frombytes("RGB", fig.canvas.get_width_height(), fig.canvas.tostring_rgb())
+    buf = BytesIO()
+    fig.savefig(buf)
+    buf.seek(0)
+    im = Image.open(buf)
+    return im
 
 def get_rssi_location_datapoints(
     client: MongoClient,
