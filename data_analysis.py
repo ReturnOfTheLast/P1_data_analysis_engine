@@ -125,7 +125,7 @@ def generate_bssid_graph(
         datapoints.append((x,y))
    
     # Get the lowest rssi
-    start_x = min(datapoints, key = lambda p: p[0])[0]
+    start_x = (min(datapoints, key = lambda p: p[0])[0] // 10**6) * 10**6 # May cause a small problem each 11th day
     
     # Lower all x values by the lowest rssi
     for i in range(len(datapoints)):
@@ -180,7 +180,7 @@ def get_rssi_location_datapoints(
         ap_data_frames_ids.append(ap_data_frames_id["_id"])
 
     # Instantiate dictionary to hold the datapoints
-    datapoints = {"rssi": [],"location": []}
+    datapoints = {"rssi": [], "location": [], "time": []}
 
     # Loop over all the ap_data_frames ids and append
     # the measured rssi and location to the dictionary
@@ -194,6 +194,11 @@ def get_rssi_location_datapoints(
             data_frames.find_one(
                 {"ap_data_frames": ap_data_frames_id}
             )["location"]
+        )
+        datapoints["time"].append(
+            data_frames.find_one(
+                {"ap_data_frames": ap_data_frames_id}
+            )["time"]
         )
 
     # Return the dictionary of datapoints
