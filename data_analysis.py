@@ -360,7 +360,7 @@ def generate_heatmap(
         draw = ImageDraw.ImageDraw(im)
         draw.text(
             (250, 250),
-            "Not Enough Data to generate heatmap",
+            "Not Enough Data to Generate Heatmap",
             fill=(0, 0, 0),
             font=hu.fnt,
             anchor="mm"
