@@ -288,10 +288,10 @@ def convert_locations_to_grid(
         x_axis = size * aspect_ratio
 
     # Calculate extra padding space to center the data when one axis is smaller
-    x_padding = y_axis - x_axis / 2
+    x_padding = (y_axis - x_axis) / 2
     if x_padding < 0: x_padding = 0
     
-    y_padding = x_axis - y_axis / 2
+    y_padding = (x_axis - y_axis) / 2
     if y_padding < 0: y_padding = 0
 
     # Tuple of access point grid location
