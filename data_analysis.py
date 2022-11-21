@@ -317,13 +317,13 @@ def convert_locations_to_grid(
             int(
                 abs(
                     (location[1] - min_longitude)/(max_longitude-min_longitude)
-                )*x_axis + buffer + x_padding
-            ),
+                )*x_axis 
+            ) + buffer + x_padding,
             int(
                 abs(
                     (location[0] - min_latitude)/(max_latitude-min_latitude)
-                )*y_axis + buffer + y_padding
-            )
+                )*y_axis
+            ) + buffer + y_padding
         ))
     
     # Return grid locations
