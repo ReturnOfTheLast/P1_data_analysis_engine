@@ -383,7 +383,7 @@ def generate_heatmap(
 
     # Loop over all scan grid locations, rssi and real locations
     # then append a node to the list for each
-    for grid_location, rssi, real_location in zip(
+    for grid_location, rssi, real_location, time in zip(
         scan_grid_locations,
         rssi_location_datapoints["rssi"],
         rssi_location_datapoints["location"],
