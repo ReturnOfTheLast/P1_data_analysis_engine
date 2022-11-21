@@ -35,7 +35,7 @@ def heatmap(bssid: str):
     
     im = da.generate_heatmap(ap_location, datapoints, 2000, 20)
     output = BytesIO()
-    im.save(output)
+    im.save(output, format='png')
 
     return Response(output.getvalue(), mimetype='image/png')
 
