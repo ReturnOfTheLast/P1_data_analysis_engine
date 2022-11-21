@@ -1,9 +1,12 @@
 #Import modules
 from pymongo import MongoClient
+import matplotlib
 import matplotlib.pyplot as plt
 from PIL import Image
 from io import BytesIO
 import heatmap_utils as hu
+
+matplotlib.use("agg")
 
 def client(
     username: str,
@@ -24,15 +27,15 @@ def client(
 
 def generate_ssid_overview(
     client: MongoClient,
-    filter_str: str,
+    filterstr: str,
     filtertype: int
 ) -> dict:
     """Get an overview of the ssid-bssid connections.
 
     Args:
         client (MongoClient): DB Client
-        filter_str (str): String to filter by
-        filtertype (int): Type of filter, 0 = ssid, 1 = bssid
+        filterstr (str): String to filter by
+        filtertype (int): Type of filter, 0 = ssid, 1 = bssid, 2 = no filter
 
     Returns:
         dict: Overview of ssid-bssid connections
@@ -49,7 +52,9 @@ def generate_ssid_overview(
     for ssid in ssid_pool.find():
 
         # Filter by ssid name (or dont if filter is set to bssid)
-        if (filter_str in ssid['name'] and filtertype == 0) or filtertype == 1:
+        if (filtertype == 2 or
+            (filterstr in ssid['name'] and filtertype == 0) or
+            filtertype == 1):
             
             # Instantiate empty list for the ssids mac addresses name
             ssid_bssid[ssid['name']] = []
@@ -61,7 +66,9 @@ def generate_ssid_overview(
             for bssid in bssid_pool.find({'ssid': ssid_id}):
 
                 # Filter by bssid (or dont if filter is set ssid)
-                if (filter_str in bssid['name'] and filtertype == 1) or filtertype == 0:
+                if (filtertype == 2 or
+                    (filterstr in bssid['name'] and filtertype == 1) or
+                    filtertype == 0):
 
                     # Append mac address to the list
                     ssid_bssid[ssid['name']].append(bssid['name'])
@@ -78,7 +85,7 @@ def generate_ssid_overview(
 def generate_bssid_graph(
     client: MongoClient,
     bssid: str
-) -> Image.Image:
+) -> plt.Figure:
     """Make a graph of bssid rssi and time.
 
     Args:
@@ -86,7 +93,7 @@ def generate_bssid_graph(
         bssid (str): Mac Address to graph
 
     Returns:
-        Image.Image: Image of graph
+        plt.Figure: Graph
     """
 
     # Get Collections from database
@@ -137,13 +144,9 @@ def generate_bssid_graph(
     ax.set_title("RSSI over Time")
     ax.set_xlabel("Time")
     ax.set_ylabel("RSSI")
-    
-    # Return image object
-    buf = BytesIO()
-    fig.savefig(buf)
-    buf.seek(0)
-    im = Image.open(buf)
-    return im
+   
+    # Return Figure
+    return fig
 
 def get_rssi_location_datapoints(
     client: MongoClient,
@@ -384,16 +387,3 @@ def generate_heatmap(
     
     # Return the generated image
     return im
-
-def image_to_png_bytes(im: Image.Image) -> BytesIO:
-    """Convert pillow image object into a png bytes object.
-
-    Args:
-        im (Image.Image): Image to convert
-
-    Returns:
-        BytesIO: PNG bytes object
-    """
-    buf = BytesIO()
-    im.save(buf, format="png")
-    return buf
