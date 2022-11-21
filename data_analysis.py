@@ -246,7 +246,7 @@ def estimate_accesspoint_location(
 
 def convert_locations_to_grid(
     ap_location: tuple[float, float],
-    scan_locations: list[tuple[float, float]],
+    scan_locations: list[list[float, float]],
     isize: int,
     buffer: int
 ) -> tuple[tuple[int, int], list[tuple[int, int]]]:
@@ -254,7 +254,7 @@ def convert_locations_to_grid(
 
     Args:
         ap_location (tuple[float, float]): Location of Access Point
-        scan_locations (list[tuple[float, float]]): Locations of scans
+        scan_locations (list[list[float, float]]): Locations of scans
         isize (int): Size of image in pixels
         buffer (int): Size of outer buffer
 
@@ -314,17 +314,17 @@ def convert_locations_to_grid(
     # Loop over all scan locations and append a tuple of grid location
     for location in scan_locations:
         scan_grid_locations.append((
-        int(
-            abs(
-                (location[1] - min_longitude)/(max_longitude-min_longitude)
-            )*x_axis + buffer + x_padding
-        ),
-        int(
-            abs(
-                (location[0] - min_latitude)/(max_latitude-min_latitude)
-            )*y_axis + buffer + y_padding
-        )
-    ))
+            int(
+                abs(
+                    (location[1] - min_longitude)/(max_longitude-min_longitude)
+                )*x_axis + buffer + x_padding
+            ),
+            int(
+                abs(
+                    (location[0] - min_latitude)/(max_latitude-min_latitude)
+                )*y_axis + buffer + y_padding
+            )
+        ))
     
     # Return grid locations
     return ap_grid_location, scan_grid_locations
