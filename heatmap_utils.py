@@ -80,12 +80,12 @@ def draw_scanning_points(im: Image.Image, scans: list[dict]) -> None:
                 (scan["coords"][0] - 5, scan["coords"][1] - 5),
                 (scan["coords"][0] + 5, scan["coords"][1] + 5)
             ],
-            fill=(127, 127, 127)
+            fill=(102, 51, 153)
         )
         draw.text(
             (scan["coords"][0] + 10, scan["coords"][1]),
             scan["label"],
-            fill=(0, 255, 255),
+            fill=(102, 51, 153),
             font=fnt,
             anchor="ls"
         )
