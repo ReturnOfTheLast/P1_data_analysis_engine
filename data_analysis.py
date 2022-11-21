@@ -386,13 +386,14 @@ def generate_heatmap(
     for grid_location, rssi, real_location in zip(
         scan_grid_locations,
         rssi_location_datapoints["rssi"],
-        rssi_location_datapoints["location"]
+        rssi_location_datapoints["location"],
+        rssi_location_datapoints["time"]
     ):
         scans.append(
             {
                 'coords': grid_location,
                 'rssi': rssi,
-                'label': f"{real_location}"
+                'label': f"{real_location} ({time})"
             }
         )
 
