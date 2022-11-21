@@ -242,7 +242,7 @@ def estimate_accesspoint_location(
         latitude += location[0] * signal_ratio
     
     # Return the location estimation
-    return (round(longitude,6), round(latitude,6))
+    return (round(latitude,6), round(longitude, 6))
 
 def convert_locations_to_grid(
     ap_location: tuple[float, float],
@@ -299,13 +299,13 @@ def convert_locations_to_grid(
         int(
             abs(
                 (ap_location[1] - min_longitude)/(max_longitude-min_longitude)
-            )*x_axis + buffer + x_padding
-        ),
+            )*x_axis
+        ) + buffer + x_padding,
         int(
             abs(
                 (ap_location[0] - min_latitude)/(max_latitude-min_latitude)
-            )*y_axis + buffer + y_padding
-        )
+            )*y_axis
+        ) + buffer + y_padding
     )
 
     # Instantiate empty list for scan grid locations
