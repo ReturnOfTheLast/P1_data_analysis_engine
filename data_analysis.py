@@ -356,10 +356,10 @@ def generate_heatmap(
             buffer
         )
     except ZeroDivisionError:
-        im = hu.make_image(size, size)
+        im = hu.make_image(500, 500)
         draw = ImageDraw.ImageDraw(im)
         draw.text(
-            (size/2, size/2),
+            (250, 250),
             "Not Enough Data to generate heatmap",
             fill=(0, 0, 0),
             font=hu.fnt,
