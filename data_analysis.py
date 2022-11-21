@@ -2,7 +2,7 @@
 from pymongo import MongoClient
 import matplotlib
 import matplotlib.pyplot as plt
-from PIL import Image
+from PIL import Image, ImageDraw
 from io import BytesIO
 import heatmap_utils as hu
 
@@ -348,12 +348,24 @@ def generate_heatmap(
     """
 
     # Convert locations to grid locations
-    ap_grid_location, scan_grid_locations = convert_locations_to_grid(
-        ap_location,
-        rssi_location_datapoints['location'],
-        size,
-        buffer
-    )
+    try:
+        ap_grid_location, scan_grid_locations = convert_locations_to_grid(
+            ap_location,
+            rssi_location_datapoints['location'],
+            size,
+            buffer
+        )
+    except ZeroDivisionError:
+        im = hu.make_image(size, size)
+        draw = ImageDraw.ImageDraw(im)
+        draw.text(
+            (size/2, size/2),
+            "Not Enough Data to generate heatmap",
+            fill=(0, 0, 0),
+            font=hu.fnt,
+            anchor="mm"
+        )
+        return im
 
     # Make dict to describe the access point node
     ap = {

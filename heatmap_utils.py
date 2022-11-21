@@ -45,7 +45,7 @@ def getcolor(color_gradient: list[list], percent: int) -> tuple[int, int, int]:
     )
 
 def make_image(width: int, height: int) -> Image.Image:
-    return Image.new("RGB", (width, height), color=(0, 0, 0))
+    return Image.new("RGB", (width, height), color=(255, 255, 255))
 
 def draw_heat_circles(im: Image.Image, ap: dict, scans: list[dict]) -> None:
     scan_dists = []
