@@ -180,7 +180,7 @@ def get_rssi_location_datapoints(
         ap_data_frames_ids.append(ap_data_frames_id["_id"])
 
     # Instantiate dictionary to hold the datapoints
-    datapoints = {"rssi": [], "location": [], "time": []}
+    datapoints = {"rssi": [], "location": [], "number": [], "time": []}
 
     # Loop over all the ap_data_frames ids and append
     # the measured rssi and location to the dictionary
@@ -194,6 +194,11 @@ def get_rssi_location_datapoints(
             data_frames.find_one(
                 {"ap_data_frames": ap_data_frames_id}
             )["location"]
+        )
+        datapoints["number"].append(
+            data_frames.find_one(
+                {"ap_data_frames": ap_data_frames_id}
+            )["number"]
         )
         datapoints["time"].append(
             data_frames.find_one(
@@ -383,17 +388,18 @@ def generate_heatmap(
 
     # Loop over all scan grid locations, rssi and real locations
     # then append a node to the list for each
-    for grid_location, rssi, real_location, time in zip(
+    for grid_location, rssi, real_location, number, time in zip(
         scan_grid_locations,
         rssi_location_datapoints["rssi"],
         rssi_location_datapoints["location"],
+        rssi_location_datapoints["number"],
         rssi_location_datapoints["time"]
     ):
         scans.append(
             {
                 'coords': grid_location,
                 'rssi': rssi,
-                'label': f"{real_location} ({time})"
+                'label': f"{real_location} ({number}) ({time})"
             }
         )
 
