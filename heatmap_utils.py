@@ -58,7 +58,7 @@ def draw_heat_circles(im: Image.Image, ap: dict, scans: list[dict]) -> None:
         )
         scan_dists.append((dist, -scan["rssi"]))
 
-    scan_dists.sort(key=lambda x: x[0], reverse=True)
+    scan_dists.sort(key=lambda x: x[1], reverse=True)
 
     draw = ImageDraw.Draw(im)
 

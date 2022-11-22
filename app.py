@@ -21,7 +21,6 @@ app = Flask(__name__)
 
 @app.get("/api/ssidoverview/<int:filtertype>/<string:filterstr>")
 def ssidoverview(filtertype: int, filterstr: str):
-    print(filtertype, filterstr)
     client = da.client(db_username, db_password, db_host)
     overview = da.generate_ssid_overview(client, filterstr, filtertype)
     return jsonify(overview)
@@ -34,6 +33,11 @@ def bssidplot(bssid: str):
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
+@app.get("/api/bssiddatapoints/<string:bssid>")
+def bssiddatapoints(bssid: str):
+    client = da.client(db_username, db_password, db_host)
+    overview = da.generate_datapoint_overview(client, bssid)
+    return jsonify(overview)
 
 @app.get("/api/heatmap/<string:bssid>.png")
 def heatmap(bssid: str):
