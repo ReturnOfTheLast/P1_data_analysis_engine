@@ -1,11 +1,21 @@
 from flask import Flask, request, Response, jsonify
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+import argparse
 from io import BytesIO
 import data_analysis as da
+
+
+# Optional docker flag
+parser = argparse.ArgumentParser()
+parser.add_argument('--docker', action="store_true", default=False, dest="docker")
+args = parser.parse_args()
 
 db_username = "root"
 db_password = "password"
 db_host = "localhost"
+
+if args.docker:
+    db_host = "mongo"
 
 app = Flask(__name__)
 
