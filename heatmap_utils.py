@@ -45,6 +45,7 @@ def getcolor(color_gradient: list[list], percent: int) -> tuple[int, int, int]:
     )
 
 def make_image(width: int, height: int) -> Image.Image:
+    # Make new pillow image
     return Image.new("RGB", (width, height), color=(255, 255, 255))
 
 def draw_heat_circles(im: Image.Image, ap: dict, scans: list[dict]) -> None:
@@ -106,3 +107,19 @@ def draw_accesspoint(im: Image.Image, ap: dict) -> None:
         font=fnt,
         anchor="ls"
     )
+
+def draw_scale_guide(im: Image.Image) -> None:
+    
+    draw = ImageDraw.Draw(im)
+    draw.rectangle(
+        [(0, im.height-40), (im.width, im.height)],
+        fill=(255, 255, 255)
+    )
+
+    for i in range(im.width - 40):
+        percent = (i/(im.width - 40)) * 100
+        draw.line(
+            [(i+20, im.height-30), (i+20, im.height-20)],
+            fill=getcolor(color_gradient, percent),
+            width=1
+        )
