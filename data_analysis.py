@@ -109,24 +109,21 @@ def generate_datapoint_overview(
     # Get DB id of the bssid
     bssid_id = bssid_pool.find_one({"name": bssid})["_id"]
 
-    # Instantiate empty list to hold ap_data_frames ids
-    ap_data_frames_ids = []
-
-    # Loop over all data_frames that reference the bssid
-    # and append their ids to the list
-    for ap_data_frame in ap_data_frames.find({'bssid': bssid_id}):
-        ap_data_frames_ids.append(ap_data_frame["_id"])
-
     # Instantiate empty list to contain the datapoints
     datapoints = []
 
     # Extract datapoints
-    for ap_data_frames_id in ap_data_frames_ids:
+    for ap_data_frame in ap_data_frames.find({"bssid": bssid_id}):
+        ap_data_frame_id = ap_data_frame["_id"]
+
         temp_dict = {"location": (), "rssi": 0, "time": 0}
-        data_frame = data_frames.find_one({"ap_data_frames": ap_data_frames_id})
+        
+        data_frame = data_frames.find_one({"ap_data_frames": ap_data_frame_id})
+        
         temp_dict["location"] = (data_frame["location"][0], data_frame["location"][1])
         temp_dict["rssi"] = ap_data_frame["rssi"]
         temp_dict["time"] = data_frame["time"]
+        
         datapoints.append(temp_dict)
 
     return datapoints
