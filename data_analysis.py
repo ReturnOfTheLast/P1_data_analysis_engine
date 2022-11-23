@@ -43,7 +43,9 @@ def generate_ssid_overview(
 
     # Get Collections from database
     db = client["scandata"]
-    bssid_pool, ssid_pool = db["bssid_pool"], db["ssid_pool"]
+    ap_data_frames, bssid_pool, ssid_pool = (db["ap_data_frames"],
+                                             db["bssid_pool"],
+                                             db["ssid_pool"])
 
     # Instantiate empty dictionary for storing return data
     ssid_bssid = {}
@@ -70,8 +72,19 @@ def generate_ssid_overview(
                     (filterstr in bssid['name'] and filtertype == 1) or
                     filtertype == 0):
 
-                    # Append mac address to the list
-                    ssid_bssid[ssid['name']].append(bssid['name'])
+                    # Find the number of scans the bssid is in
+                    num_of_scans = len(
+                        list(
+                            ap_data_frames.find(
+                                {"bssid": bssid["_id"]}
+                            )
+                        )
+                    )
+
+                    # Append mac address and number of scanes to the list
+                    ssid_bssid[ssid['name']].append(
+                        (bssid['name'], num_of_scans)
+                    )
     
     # Remove all ssids that doesn't have at least one mac address
     keys = [k for k, v in ssid_bssid.items() if v == []]
