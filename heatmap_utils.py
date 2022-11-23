@@ -117,7 +117,7 @@ def draw_scale_guide(im: Image.Image) -> None:
     )
 
     for i in range(im.width - 40):
-        percent = (i/(im.width - 40)) * 100
+        percent = int((i/(im.width - 40)) * 100)
         draw.line(
             [(i+20, im.height-30), (i+20, im.height-20)],
             fill=getcolor(color_gradient, percent),
