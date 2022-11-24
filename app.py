@@ -25,6 +25,14 @@ def ssidoverview(filtertype: int, filterstr: str):
     overview = da.generate_ssid_overview(client, filterstr, filtertype)
     return jsonify(overview)
 
+@app.get("/api/apscans")
+def applot():
+    client = da.client(db_username, db_password, db_host)
+    fig = da.generate_graph_of_aps(client)
+    output = BytesIO()
+    FigureCanvas(fig).print_figure(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
 @app.get("/api/bssidplot/<string:bssid>.png")
 def bssidplot(bssid: str):
     client = da.client(db_username, db_password, db_host)

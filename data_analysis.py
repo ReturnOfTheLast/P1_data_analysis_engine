@@ -99,6 +99,15 @@ def generate_datapoint_overview(
     client: MongoClient,
     bssid: str
 ) -> list[dict]:
+    """Generate a table of datapoints.
+
+    Args:
+        client (MongoClient): Client to connect to the DB
+        bssid (str): The BSSID to generate datapoints for
+
+    Returns:
+        list[dict]: List of dictionarys containing location, rssi and time
+    """
 
     # Get Collections from database
     db = client["scandata"]
@@ -169,13 +178,6 @@ def generate_bssid_graph(
         y = ap_data_frames.find_one({"_id": ap_data_frames_id})['rssi']
         x = data_frames.find_one({"ap_data_frames": ap_data_frames_id})['time']
         datapoints.append((x,y))
-   
-    # Get the lowest rssi
-    start_x = (min(datapoints, key = lambda p: p[0])[0] // 10**6) * 10**6 # May cause a small problem each 11th day
-    
-    # Lower all x values by the lowest rssi
-    for i in range(len(datapoints)):
-        datapoints[i] = (datapoints[i][0]-start_x,datapoints[i][1])
 
     # Make plotable datapoints by splitting it into two lists
     # of x and y values
@@ -191,6 +193,43 @@ def generate_bssid_graph(
     ax.set_xlabel("Time")
     ax.set_ylabel("RSSI")
    
+    # Return Figure
+    return fig
+
+def generate_graph_of_aps(
+    client: MongoClient
+):
+    """Generate a graph of the number of access points scanned over time.
+
+    Args:
+        client (MongoClient): Client to connect to DB
+    """
+    # Get Collections from database
+    db = client["scandata"]
+    data_frames = db["data_frames"]
+
+    # Instantiate empty list to contain the datapoints to plot
+    datapoints = []
+
+    for data_frame in data_frames.find({}):
+        y = len(data_frame["ap_data_frames"])
+        x = data_frame["time"]
+        datapoints.append((x, y))
+
+    # plotable datapoints by splitting it into two lists
+    # of x and y values
+    x, y = zip(*datapoints)
+
+    # Make scatter plot of the values
+    fig, ax = plt.subplots()
+    ax.plot(x, y, label="Number of Access Points")
+
+    # Setup legends
+    ax.legends()
+    ax.set_title("Access Point scans over Time")
+    ax.set_xlabel("Time")
+    ax.set_ylabel("Access Point Scans")
+
     # Return Figure
     return fig
 
