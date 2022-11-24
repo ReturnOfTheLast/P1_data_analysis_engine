@@ -225,7 +225,7 @@ def generate_graph_of_aps(
     ax.plot(x, y, label="Number of Access Points")
 
     # Setup legends
-    ax.legends()
+    ax.legend()
     ax.set_title("Access Point scans over Time")
     ax.set_xlabel("Time")
     ax.set_ylabel("Access Point Scans")
