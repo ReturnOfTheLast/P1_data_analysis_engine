@@ -426,7 +426,7 @@ def generate_heatmap(
     # Make dict to describe the access point node
     ap = {
         'coords': ap_grid_location,
-        'label': f'Access Point {ap_location}'
+        'label': f'Access Point\n{ap_location}'
     }
 
     # Instantiate empty list to hold scan nodes
@@ -445,7 +445,7 @@ def generate_heatmap(
             {
                 'coords': grid_location,
                 'rssi': rssi,
-                'label': f"{real_location} ({number}) ({time})"
+                'label': f"{real_location}\n({number}) ({time})"
             }
         )
 
