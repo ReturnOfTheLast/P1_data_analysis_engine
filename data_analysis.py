@@ -450,8 +450,7 @@ def generate_heatmap(
         )
 
     # Make the image and draw the heat circles and nodes
-    # Add 40 to the height to draw the color scale guide
-    im = hu.make_image(size, size+40)
+    im = hu.make_image(size, size)
     hu.draw_heat_circles(im,ap,scans)
     hu.draw_accesspoint(im,ap)
     hu.draw_scanning_points(im,scans)

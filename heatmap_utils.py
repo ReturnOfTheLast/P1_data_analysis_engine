@@ -46,7 +46,7 @@ def getcolor(color_gradient: list[list], percent: int) -> tuple[int, int, int]:
 
 def make_image(width: int, height: int) -> Image.Image:
     # Make new pillow image
-    return Image.new("RGB", (width, height), color=(255, 255, 255))
+    return Image.new("RGB", (width, height+100), color=(255, 255, 255))
 
 def draw_heat_circles(im: Image.Image, ap: dict, scans: list[dict]) -> None:
     scan_dists = []
@@ -112,20 +112,20 @@ def draw_scale_guide(im: Image.Image) -> None:
     
     draw = ImageDraw.Draw(im)
     draw.rectangle(
-        [(0, im.height-40), (im.width, im.height)],
+        [(0, im.height-100), (im.width, im.height)],
         fill=(255, 255, 255)
     )
 
     for i in range(im.width - 40):
         percent = int((i/(im.width - 40)) * 100)
         draw.line(
-            [(i+20, im.height-30), (i+20, im.height-20)],
+            [(i+20, im.height-80), (i+20, im.height-30)],
             fill=getcolor(color_gradient, percent),
             width=1
         )
 
     draw.text(
-        (40, im.height-15),
+        (40, im.height-25),
         "0 dBm",
         fill=(50, 50, 50),
         font=fnt,
@@ -133,7 +133,7 @@ def draw_scale_guide(im: Image.Image) -> None:
     )
     
     draw.text(
-        (int(im.width/2), im.height-15),
+        (int(im.width/2), im.height-25),
         "-50 dBm",
         fill=(50, 50, 50),
         font=fnt,
@@ -141,7 +141,7 @@ def draw_scale_guide(im: Image.Image) -> None:
     )
     
     draw.text(
-        (im.width-40, im.height-15),
+        (im.width-40, im.height-25),
         "-100 dBm",
         fill=(50, 50, 50),
         font=fnt,
