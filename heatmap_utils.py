@@ -83,7 +83,7 @@ def draw_scanning_points(im: Image.Image, scans: list[dict]) -> None:
             ],
             fill=(102, 51, 153)
         )
-        draw.text(
+        draw.multiline_text(
             (scan["coords"][0] + 10, scan["coords"][1]),
             scan["label"],
             fill=(102, 51, 153),
@@ -100,7 +100,7 @@ def draw_accesspoint(im: Image.Image, ap: dict) -> None:
         ],
         fill=(50, 50, 50)
     )
-    draw.text(
+    draw.multiline_text(
         (ap["coords"][0] + 10, ap["coords"][1]),
         ap["label"],
         fill=(50, 50, 50),
@@ -123,3 +123,27 @@ def draw_scale_guide(im: Image.Image) -> None:
             fill=getcolor(color_gradient, percent),
             width=1
         )
+
+    draw.text(
+        (40, im.height-15),
+        "0 dBm",
+        fill=(50, 50, 50),
+        font=fnt,
+        anchor="mt"
+    )
+    
+    draw.text(
+        (int(im.width/2), im.height-15),
+        "-50 dBm",
+        fill=(50, 50, 50),
+        font=fnt,
+        anchor="mt"
+    )
+    
+    draw.text(
+        (im.width-40, im.height-15),
+        "-100 dBm",
+        fill=(50, 50, 50),
+        font=fnt,
+        anchor="mt"
+    )
