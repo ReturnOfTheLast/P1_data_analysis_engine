@@ -1,24 +1,10 @@
 from PIL import Image, ImageDraw, ImageFont
 from math import sqrt
 
-"""
-ap = {
-    "coords": (0, 0),
-    "label": "Access Point"
-}
-
-scans = [
-    {
-        "coords": (0, 0),
-        "rssi": -45,
-        "label": "scanning point 1"
-    },
-    ...
-]
-"""
-
+# Make font object to use for text
 fnt = ImageFont.truetype("LiberationMono-Regular.ttf", 20)
 
+# Define color gradient for heatmap
 color_gradient = [
                     [0, 0, 255, 0],
                     [50, 255, 255, 0],
@@ -26,6 +12,15 @@ color_gradient = [
                  ]
 
 def getcolor(color_gradient: list[list], percent: int) -> tuple[int, int, int]:
+    """The the color from the color gradient for percent.
+
+    Args:
+        color_gradient (list[list]): The color gradient
+        percent (int): The percent to get the color for
+
+    Returns:
+        tuple[int, int, int]: The color
+    """
     index = 0
     for i in range(len(color_gradient)):
         if percent < color_gradient[i][0]:
@@ -45,10 +40,30 @@ def getcolor(color_gradient: list[list], percent: int) -> tuple[int, int, int]:
     )
 
 def make_image(width: int, height: int) -> Image.Image:
-    # Make new pillow image
+    """Make a new pillow image.
+
+    Args:
+        width (int): The width of the image
+        height (int): The height of the image
+
+    Returns:
+        Image.Image: The generated image
+    """
+    # Make the image and return it, we add an extra 100 pixels to the height
+    # so we have space for a gradient bar the bottom
     return Image.new("RGB", (width, height+100), color=(255, 255, 255))
 
 def draw_heat_circles(im: Image.Image, ap: dict, scans: list[dict]) -> None:
+    """Draw the heatmap circles.
+
+    Args:
+        im (Image.Image): Image to draw on
+        ap (dict): Access Point data
+        scans (list[dict]): List of scan data
+
+    Returns:
+        None:
+    """
     scan_dists = []
     for scan in scans:
         dist = int(
@@ -74,6 +89,15 @@ def draw_heat_circles(im: Image.Image, ap: dict, scans: list[dict]) -> None:
         )
 
 def draw_scanning_points(im: Image.Image, scans: list[dict]) -> None:
+    """Draw the scanning points and write a label for them.
+
+    Args:
+        im (Image.Image): The image to draw on
+        scans (list[dict]): List of scan data
+
+    Returns:
+        None:
+    """
     draw = ImageDraw.Draw(im)
     for scan in scans:
         draw.ellipse(
@@ -92,6 +116,15 @@ def draw_scanning_points(im: Image.Image, scans: list[dict]) -> None:
         )
 
 def draw_accesspoint(im: Image.Image, ap: dict) -> None:
+    """Draw the access point on the heatmap with a label.
+
+    Args:
+        im (Image.Image): Image to draw on
+        ap (dict): Access Point data
+
+    Returns:
+        None:
+    """
     draw = ImageDraw.Draw(im)
     draw.ellipse(
         [
@@ -109,7 +142,14 @@ def draw_accesspoint(im: Image.Image, ap: dict) -> None:
     )
 
 def draw_scale_guide(im: Image.Image) -> None:
-    
+    """Draw a scale gradient guide bar at the bottom.
+
+    Args:
+        im (Image.Image): Image to draw on
+
+    Returns:
+        None:
+    """
     draw = ImageDraw.Draw(im)
     draw.rectangle(
         [(0, im.height-100), (im.width, im.height)],

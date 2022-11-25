@@ -19,12 +19,14 @@ if args.docker:
 
 app = Flask(__name__)
 
+# Overview of ssid - bssid relationship
 @app.get("/api/ssidoverview/<int:filtertype>/<string:filterstr>")
 def ssidoverview(filtertype: int, filterstr: str):
     client = da.client(db_username, db_password, db_host)
     overview = da.generate_ssid_overview(client, filterstr, filtertype)
     return jsonify(overview)
 
+# Access Points over time plot
 @app.get("/api/apscans.png")
 def applot():
     client = da.client(db_username, db_password, db_host)
@@ -33,6 +35,7 @@ def applot():
     FigureCanvas(fig).print_figure(output)
     return Response(output.getvalue(), mimetype='image/png')
 
+# RSSI over time for bssid plot
 @app.get("/api/bssidplot/<string:bssid>.png")
 def bssidplot(bssid: str):
     client = da.client(db_username, db_password, db_host)
@@ -41,12 +44,14 @@ def bssidplot(bssid: str):
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
+# List of bssid datapoints
 @app.get("/api/bssiddatapoints/<string:bssid>")
 def bssiddatapoints(bssid: str):
     client = da.client(db_username, db_password, db_host)
     overview = da.generate_datapoint_overview(client, bssid)
     return jsonify(overview)
 
+# Heatmap of bssid
 @app.get("/api/heatmap/<string:bssid>.png")
 def heatmap(bssid: str):
     client = da.client(db_username, db_password, db_host)
@@ -61,5 +66,6 @@ def heatmap(bssid: str):
 
     return Response(output.getvalue(), mimetype='image/png')
 
+# If script is run as the main file, start the server
 if __name__ == "__main__":
     app.run("0.0.0.0", 8090)
