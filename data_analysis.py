@@ -1,11 +1,21 @@
+"""Module that contains functions that can be called to analyse data in the database
+
+The functions in here can be used to do needed data analysis for the frontend.
+This module is primarily used by the flask api application
+"""
+
 #Import modules
 from pymongo import MongoClient
 import matplotlib
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw
 from io import BytesIO
+
+# Import heatmap utilities
 import heatmap_utils as hu
 
+# Set the matplotlib to agg to avoid errors when generating images
+# as an headless server
 matplotlib.use("agg")
 
 def client(
@@ -23,6 +33,8 @@ def client(
     Returns:
         MongoClient: DB Client
     """
+
+    # Make client connection to database and return it
     return MongoClient(f"mongodb://{username}:{password}@{host}:27017/")
 
 def generate_ssid_overview(
@@ -124,17 +136,26 @@ def generate_datapoint_overview(
     # Extract datapoints
     for ap_data_frame in ap_data_frames.find({"bssid": bssid_id}):
         ap_data_frame_id = ap_data_frame["_id"]
-
+        
+        # Make temporary dictionary
         temp_dict = {"location": (), "rssi": 0, "time": 0}
         
+        # Find the data frame in the database
         data_frame = data_frames.find_one({"ap_data_frames": ap_data_frame_id})
         
-        temp_dict["location"] = (data_frame["location"][0], data_frame["location"][1])
+        # Populate the temporary dictionary with location, rssi and time from
+        # the data frame
+        temp_dict["location"] = (
+            data_frame["location"][0],
+            data_frame["location"][1]
+        )
         temp_dict["rssi"] = ap_data_frame["rssi"]
         temp_dict["time"] = data_frame["time"]
         
+        # Added the datapoints to the datapoints list
         datapoints.append(temp_dict)
 
+    # Return the datapoints
     return datapoints
 
 def generate_bssid_graph(
@@ -339,7 +360,7 @@ def estimate_accesspoint_location(
     # Return the location estimation
     return (round(latitude,6), round(longitude, 6))
 
-def convert_locations_to_grid(
+def convert_locations_to_grid( 
     ap_location: tuple[float, float],
     scan_locations: list[list[float, float]],
     isize: int,
@@ -443,14 +464,17 @@ def generate_heatmap(
     """
 
     # Convert locations to grid locations
-    try:
+    if len(rssi_location_datapoints) > 1:
         ap_grid_location, scan_grid_locations = convert_locations_to_grid(
             ap_location,
             rssi_location_datapoints['location'],
             size,
             buffer
         )
-    except ZeroDivisionError:
+    else:
+        # If there isn't more then 1 scans of the access points we can't
+        # generate a heatmap and we should instead display an error and
+        # return early.
         im = hu.make_image(500, 500)
         draw = ImageDraw.ImageDraw(im)
         draw.text(
